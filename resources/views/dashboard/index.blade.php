@@ -110,43 +110,6 @@
             </div>
         </div>
 
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <a href="{{ route('transaksi.create') }}"
-                class="glass-white rounded-2xl p-6 hover-lift shadow-lg group transition-all border-2 border-transparent hover:border-purple-500">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="w-16 h-16 gradient-purple rounded-2xl flex items-center justify-center shadow-lg shadow-purple-500/50 group-hover:scale-110 transition-transform">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-xl mb-1">Jual Gas</h3>
-                        <p class="text-gray-600 text-sm">Buat transaksi penjualan baru</p>
-                    </div>
-                </div>
-            </a>
-
-            <a href="{{ route('stok.index') }}"
-                class="glass-white rounded-2xl p-6 hover-lift shadow-lg group transition-all border-2 border-transparent hover:border-green-500">
-                <div class="flex items-center gap-4">
-                    <div
-                        class="w-16 h-16 gradient-green rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/50 group-hover:scale-110 transition-transform">
-                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-xl mb-1">Tambah Stok</h3>
-                        <p class="text-gray-600 text-sm">Input stok masuk dari supplier</p>
-                    </div>
-                </div>
-            </a>
-        </div>
-
         <!-- Chart & Recent Transactions -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Chart -->
@@ -174,8 +137,7 @@
                     @forelse($transaksiTerakhir as $trans)
                         <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                             <div class="w-10 h-10 gradient-cyan rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
-                                    viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>

@@ -13,101 +13,172 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .bg-mesh-dark {
-            background-color: #022c22;
-            background-image:
-                radial-gradient(at 0% 0%, hsla(161, 94%, 30%, 0.4) 0, transparent 50%),
-                radial-gradient(at 100% 100%, hsla(166, 100%, 46%, 0.2) 0, transparent 50%);
+        .bg-image-overlay {
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .bg-image-overlay::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            /* Gelapkan background sedikit saja agar teks terbaca */
+            z-index: 1;
+        }
+
+        /* --- EFEK BENING TOTAL (TRANSPARENT) --- */
+        .login-box {
+            /* 1. Background benar-benar bening (transparent) */
+            background: transparent;
+
+            /* 2. Tanpa Blur */
+            backdrop-filter: none;
+            -webkit-backdrop-filter: none;
+
+            /* 3. Border dipertegas (lebih tebal/putih) agar kotak tetap terlihat bentuknya */
+            border: 2px solid rgba(255, 255, 255, 0.5);
+
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+            border-radius: 1.5rem;
+            /* Sudut lebih bulat */
+            animation: slideInUp 0.6s ease-out;
+        }
+
+        /* Helper agar teks lebih 'pop' di background transparan */
+        .text-glow {
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+
+        .input-field {
+            background: transparent;
+            border: none;
+            /* Garis input putih tegas */
+            border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+            border-radius: 0;
+            transition: all 0.3s ease;
+            color: white;
+            padding: 12px 0;
+            font-weight: 500;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+            /* Shadow teks input */
+        }
+
+        .input-field::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+            /* Placeholder putih terang */
+        }
+
+        .input-field:focus {
+            background: transparent;
+            border-bottom-color: #8BC34A;
+            /* Hijau saat fokus */
+            outline: none;
+        }
+
+        .input-field:focus::placeholder {
+            opacity: 0.6;
+            transform: translateX(10px);
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn-login {
+            /* Tombol dibuat solid atau gradient agar kontras dengan background bening */
+            background: linear-gradient(135deg, #8BC34A 0%, #7CB342 100%);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(139, 195, 74, 0.5);
+            background: linear-gradient(135deg, #7CB342 0%, #689F38 100%);
         }
     </style>
 </head>
 
-<body class="bg-mesh-dark min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="bg-image-overlay min-h-screen flex items-center justify-center p-4"
+    style="background-image: url('{{ asset('images/bg-login.png') }}');">
 
-    <div
-        class="absolute top-0 left-1/4 w-96 h-96 bg-emerald-500 rounded-full mix-blend-overlay filter blur-[128px] opacity-20 animate-pulse">
-    </div>
-    <div
-        class="absolute bottom-0 right-1/4 w-96 h-96 bg-teal-500 rounded-full mix-blend-overlay filter blur-[128px] opacity-20">
-    </div>
+    <div class="absolute inset-0" style="z-index: 1;"></div>
 
-    <div class="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-8 relative z-10"
-        x-data="{ showPassword: false }">
+    <div class="w-full max-w-xs login-box p-6 relative z-10" x-data="{ showPassword: false }">
 
-        <div class="text-center mb-8">
+        <div class="text-center mb-5">
+            <h1 class="text-2xl font-bold text-white tracking-wide mb-2 text-glow">LOGIN</h1>
             <div
-                class="inline-flex p-3 rounded-full bg-emerald-500/20 border border-emerald-500/30 mb-4 text-emerald-300">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                </svg>
+                class="w-20 h-1 bg-gradient-to-r from-green-400 via-green-500 to-green-600 mx-auto rounded-full shadow-lg shadow-green-500/50">
             </div>
-            <h1 class="text-3xl font-bold text-white tracking-tight">{{ $pengaturanToko->nama_toko ?? 'GasKu' }}</h1>
-            <p class="text-emerald-200/60 text-sm mt-2">Please sign in to continue</p>
         </div>
 
-        <form action="{{ route('login') }}" method="POST" class="space-y-6">
+        <form action="{{ route('login') }}" method="POST" class="space-y-4">
             @csrf
 
-            <div class="space-y-4">
-                <div class="relative group">
-                    <div
-                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-200/50 group-focus-within:text-emerald-400 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                        </svg>
-                    </div>
-                    <input type="email" name="email" placeholder="Email Address" required
-                        class="w-full pl-10 pr-4 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-black/30 focus:border-emerald-500 transition-all">
-                </div>
+            <div>
+                <label class="block text-white text-sm font-bold mb-1 text-glow">Email</label>
+                <input type="email" name="email" placeholder="Masukkan email" required autocomplete="off"
+                    class="input-field w-full">
+            </div>
 
-                <div class="relative group">
-                    <div
-                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-emerald-200/50 group-focus-within:text-emerald-400 transition">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                        </svg>
-                    </div>
-                    <input :type="showPassword ? 'text' : 'password'" name="password" placeholder="Password" required
-                        class="w-full pl-10 pr-10 py-3 bg-black/20 border border-white/10 rounded-xl text-white placeholder-white/30 focus:outline-none focus:bg-black/30 focus:border-emerald-500 transition-all">
+            <div>
+                <label class="block text-white text-sm font-bold mb-1 text-glow">Password</label>
+                <div class="relative">
+                    <input :type="showPassword ? 'text' : 'password'" name="password" placeholder="Masukkan password"
+                        required class="input-field w-full pr-10">
                     <button type="button" @click="showPassword = !showPassword"
-                        class="absolute right-3 top-3 text-emerald-200/50 hover:text-emerald-400">
+                        class="absolute right-0 top-1/2 -translate-y-1/2 text-white hover:text-green-400 transition drop-shadow-md">
                         <svg x-show="!showPassword" class="w-5 h-5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                         <svg x-show="showPassword" class="w-5 h-5" fill="none" stroke="currentColor"
                             viewBox="0 0 24 24" style="display:none">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                 d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                         </svg>
                     </button>
                 </div>
             </div>
 
-            <div class="flex items-center justify-between text-sm">
-                <label class="flex items-center text-emerald-100/80 hover:text-white cursor-pointer">
-                    <input type="checkbox"
-                        class="rounded bg-white/10 border-transparent focus:ring-0 text-emerald-500 mr-2">
-                    Ingat Saya
+            <div class="flex items-center text-sm pt-1">
+                <label
+                    class="flex items-center text-white font-medium hover:text-green-300 cursor-pointer transition text-glow">
+                    <input type="checkbox" name="remember"
+                        class="rounded border-white bg-transparent text-green-500 focus:ring-green-500 focus:ring-offset-0 mr-2 border-2">
+                    <span>Ingat saya</span>
                 </label>
             </div>
 
             <button type="submit"
-                class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-bold rounded-xl shadow-lg shadow-emerald-500/20 transition-all transform hover:scale-[1.02]">
-                Masuk Akun
+                class="btn-login w-full py-3 text-white font-bold rounded-full shadow-lg mt-3 transition-transform hover:scale-105 text-glow">
+                Log in
             </button>
         </form>
 
-        <div class="text-center mt-8 text-emerald-200/30 text-xs">
-            © {{ date('Y') }} {{ $pengaturanToko->nama_toko ?? 'GasKu' }}.
+        <div class="text-center mt-4 text-white text-xs text-glow">
+            © {{ date('Y') }} {{ $pengaturanToko->nama_toko ?? 'GasKu' }} All rights reserved.
         </div>
     </div>
+
 </body>
 
 </html>
