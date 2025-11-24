@@ -9,7 +9,7 @@
 
         <!-- Back Button -->
         <div>
-            <a href="{{ route('transaksi.index') }}"
+            <a href="{{ route('staff.transaksi.index') }}"
                 class="inline-flex items-center gap-2 text-purple-600 hover:text-purple-700 font-semibold">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -194,7 +194,7 @@
                     </svg>
                     Cetak Invoice
                 </button>
-                <form action="{{ route('transaksi.destroy', $transaksi->id) }}" method="POST"
+                <form action="{{ route('staff.transaksi.destroy', $transaksi->id) }}" method="POST"
                     onsubmit="return confirm('Yakin ingin menghapus transaksi ini? Stok akan dikembalikan.')"
                     class="flex-1">
                     @csrf

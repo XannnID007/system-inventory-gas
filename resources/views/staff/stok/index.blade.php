@@ -69,7 +69,7 @@
                     <h3 class="text-2xl font-bold text-gray-900">Tambah Stok Masuk</h3>
                 </div>
 
-                <form action="{{ route('stok.stok-masuk.store') }}" method="POST" enctype="multipart/form-data"
+                <form action="{{ route('staff.stok.stok-masuk.store') }}" method="POST" enctype="multipart/form-data"
                     class="space-y-6">
                     @csrf
 
@@ -246,7 +246,7 @@
                     <h3 class="text-2xl font-bold text-gray-900">Penyesuaian Stok</h3>
                 </div>
 
-                <form action="{{ route('stok.penyesuaian.store') }}" method="POST" class="space-y-6">
+                <form action="{{ route('staff.stok.penyesuaian.store') }}" method="POST" class="space-y-6">
                     @csrf
 
                     <div class="p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">

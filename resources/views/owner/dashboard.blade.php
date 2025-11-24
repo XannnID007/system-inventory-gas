@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard')
-@section('page-title', 'Dashboard')
-@section('page-subtitle', 'Ringkasan data agen gas LPG 3kg')
+@section('title', 'Dashboard Owner')
+@section('page-title', 'Dashboard Owner')
+@section('page-subtitle', 'Ringkasan lengkap bisnis agen gas LPG')
 
 @section('content')
     <div class="space-y-6">
@@ -19,13 +19,8 @@
                     </div>
                     <div class="flex-1">
                         <h3 class="font-bold text-yellow-800 text-lg">Peringatan Stok!</h3>
-                        <p class="text-yellow-700">Stok gas Anda sudah menipis. Segera lakukan pengisian stok dari supplier.
-                        </p>
+                        <p class="text-yellow-700">Stok gas sudah menipis. Segera lakukan pengisian stok dari supplier.</p>
                     </div>
-                    <a href="{{ route('stok.index') }}"
-                        class="px-6 py-2.5 bg-yellow-500 hover:bg-yellow-600 text-white rounded-xl font-semibold transition-all hover-lift">
-                        Isi Stok
-                    </a>
                 </div>
             </div>
         @endif
@@ -101,12 +96,53 @@
                 </div>
                 <h3 class="text-gray-500 text-sm font-medium mb-1">Keuntungan Bulan Ini</h3>
                 <p class="text-4xl font-extrabold {{ $keuntunganBulanIni >= 0 ? 'text-green-600' : 'text-red-600' }} mb-1">
-                    Rp {{ number_format($keuntunganBulanIni, 0, ',', '.') }}</p>
+                    Rp {{ number_format($keuntunganBulanIni, 0, ',', '.') }}
+                </p>
                 <p class="text-gray-600 text-sm font-medium">
                     @if ($pengaturan)
                         Margin: Rp {{ number_format($pengaturan->margin, 0, ',', '.') }}/tabung
                     @endif
                 </p>
+            </div>
+        </div>
+
+        <!-- Staff Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-white rounded-2xl p-6 hover-lift shadow-lg">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 gradient-orange rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-gray-500 text-sm font-medium mb-1">Total Staff</h3>
+                        <p class="text-3xl font-extrabold text-gray-900">{{ $totalStaff }} Staff</p>
+                        <p class="text-gray-600 text-sm">{{ $staffAktif }} aktif hari ini</p>
+                    </div>
+                    <a href="{{ route('owner.staff.index') }}"
+                        class="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-xl font-semibold transition-all">
+                        Kelola
+                    </a>
+                </div>
+            </div>
+
+            <div class="glass-white rounded-2xl p-6 hover-lift shadow-lg">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 gradient-blue rounded-2xl flex items-center justify-center shadow-lg">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="text-gray-500 text-sm font-medium mb-1">Modal Bulan Ini</h3>
+                        <p class="text-3xl font-extrabold text-gray-900">Rp
+                            {{ number_format($modalBulanIni, 0, ',', '.') }}</p>
+                        <p class="text-gray-600 text-sm">Total pembelian stok</p>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -119,9 +155,7 @@
                         <h3 class="font-bold text-gray-900 text-xl">Grafik Penjualan</h3>
                         <p class="text-gray-600 text-sm">7 hari terakhir</p>
                     </div>
-                    <div class="px-4 py-2 bg-purple-100 text-purple-700 rounded-xl text-sm font-bold">
-                        Tabung
-                    </div>
+                    <div class="px-4 py-2 bg-purple-100 text-purple-700 rounded-xl text-sm font-bold">Tabung</div>
                 </div>
                 <canvas id="salesChart" height="80"></canvas>
             </div>
@@ -130,21 +164,23 @@
             <div class="glass-white rounded-2xl p-6 shadow-lg">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="font-bold text-gray-900 text-xl">Transaksi Terakhir</h3>
-                    <a href="{{ route('riwayat.index') }}"
+                    <a href="{{ route('owner.riwayat.index') }}"
                         class="text-purple-600 hover:text-purple-700 text-sm font-bold">Lihat Semua</a>
                 </div>
                 <div class="space-y-4">
                     @forelse($transaksiTerakhir as $trans)
                         <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors">
                             <div class="w-10 h-10 gradient-cyan rounded-lg flex items-center justify-center">
-                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                         d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="font-semibold text-gray-900 text-sm truncate">{{ $trans->no_invoice }}</p>
-                                <p class="text-gray-600 text-xs">{{ $trans->jumlah }} tabung</p>
+                                <p class="text-gray-600 text-xs">{{ $trans->user->nama }} • {{ $trans->jumlah }} tabung
+                                </p>
                             </div>
                             <div class="text-right">
                                 <p class="font-bold text-gray-900 text-sm">Rp
@@ -170,7 +206,6 @@
 
     @push('scripts')
         <script>
-            // Chart.js - Sales Chart
             const ctx = document.getElementById('salesChart').getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
             gradient.addColorStop(0, 'rgba(102, 126, 234, 0.4)');
@@ -197,8 +232,6 @@
                         pointBackgroundColor: 'rgb(102, 126, 234)',
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
-                        pointHoverBackgroundColor: 'rgb(118, 75, 162)',
-                        pointHoverBorderColor: '#fff',
                     }]
                 },
                 options: {
@@ -212,13 +245,6 @@
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
                             padding: 12,
                             borderRadius: 8,
-                            titleFont: {
-                                size: 14,
-                                weight: 'bold'
-                            },
-                            bodyFont: {
-                                size: 13
-                            },
                             callbacks: {
                                 label: function(context) {
                                     return context.parsed.y + ' Tabung';
@@ -230,25 +256,15 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                precision: 0,
-                                font: {
-                                    size: 12
-                                }
+                                precision: 0
                             },
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.05)',
-                                drawBorder: false
+                                color: 'rgba(0, 0, 0, 0.05)'
                             }
                         },
                         x: {
-                            ticks: {
-                                font: {
-                                    size: 12
-                                }
-                            },
                             grid: {
-                                display: false,
-                                drawBorder: false
+                                display: false
                             }
                         }
                     }

@@ -9,7 +9,7 @@
 
         <!-- Filter & Tabs -->
         <div class="glass-white rounded-2xl p-6 shadow-lg">
-            <form action="{{ route('riwayat.index') }}" method="GET" class="space-y-4">
+            <form action="{{ route('owner.riwayat.index') }}" method="GET" class="space-y-4">
                 <!-- Tabs -->
                 <div class="flex gap-2 p-2 bg-gray-100 rounded-xl">
                     <button type="submit" name="tipe" value="penjualan"
@@ -43,7 +43,7 @@
                             class="px-6 py-3 gradient-purple text-white font-bold rounded-xl hover:shadow-lg transition-all">
                             Filter
                         </button>
-                        <a href="{{ route('riwayat.index') }}"
+                        <a href="{{ route('owner.riwayat.index') }}"
                             class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold rounded-xl transition-all">
                             Reset
                         </a>

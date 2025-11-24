@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Owner;
 
+use App\Http\Controllers\Controller;
 use App\Models\Pengaturan;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ class PengaturanController extends Controller
         $pengaturan = Pengaturan::first();
         $user = auth()->user();
 
-        return view('pengaturan.index', compact('pengaturan', 'user'));
+        return view('owner.pengaturan.index', compact('pengaturan', 'user'));
     }
 
     public function updateToko(Request $request)

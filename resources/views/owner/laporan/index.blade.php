@@ -9,7 +9,7 @@
 
         <!-- Filter Periode -->
         <div class="glass-white rounded-2xl p-6 shadow-lg">
-            <form action="{{ route('laporan.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
+            <form action="{{ route('owner.laporan.index') }}" method="GET" class="flex flex-col md:flex-row gap-4 items-end">
                 <div class="flex-1">
                     <label class="block text-gray-700 font-bold mb-2">Tanggal Awal</label>
                     <input type="date" name="tanggal_awal" value="{{ $periodeAwal }}"
@@ -20,10 +20,32 @@
                     <input type="date" name="tanggal_akhir" value="{{ $periodeAkhir }}"
                         class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all">
                 </div>
-                <button type="submit"
-                    class="px-8 py-3 gradient-purple text-white font-bold rounded-xl hover:shadow-lg transition-all">
-                    Tampilkan
-                </button>
+                <div class="flex gap-2">
+                    <button type="submit"
+                        class="px-8 py-3 gradient-purple text-white font-bold rounded-xl hover:shadow-lg transition-all">
+                        Tampilkan
+                    </button>
+
+                    <!-- Export Buttons -->
+                    <div class="flex gap-2">
+                        <a href="{{ route('owner.laporan.export.pdf', ['tanggal_awal' => $periodeAwal, 'tanggal_akhir' => $periodeAkhir]) }}"
+                            class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white font-bold rounded-xl transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                            </svg>
+                            PDF
+                        </a>
+                        <a href="{{ route('owner.laporan.export.excel', ['tanggal_awal' => $periodeAwal, 'tanggal_akhir' => $periodeAkhir]) }}"
+                            class="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl transition-all flex items-center gap-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            Excel
+                        </a>
+                    </div>
+                </div>
             </form>
         </div>
 
@@ -161,49 +183,84 @@
             </div>
         </div>
 
-        <!-- Detail Tabel Transaksi -->
-        <div class="glass-white rounded-2xl shadow-lg overflow-hidden">
-            <div class="p-6 border-b border-gray-200 flex items-center justify-between">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-900">Detail Transaksi</h3>
-                    <p class="text-gray-600 text-sm">Periode: {{ \Carbon\Carbon::parse($periodeAwal)->format('d M Y') }} -
-                        {{ \Carbon\Carbon::parse($periodeAkhir)->format('d M Y') }}</p>
+        <!-- Top Staff Performer -->
+        @if ($topStaff->count() > 0)
+            <div class="glass-white rounded-2xl shadow-lg overflow-hidden">
+                <div class="p-6 border-b border-gray-200 bg-gradient-to-r from-purple-50 to-pink-50">
+                    <h3 class="text-xl font-bold text-gray-900">Top Staff Performer</h3>
+                    <p class="text-gray-600 text-sm">Staff terbaik periode ini</p>
                 </div>
-                <button onclick="window.print()"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all flex items-center gap-2">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    Cetak
-                </button>
-            </div>
-            <div class="p-6">
-                <div class="grid md:grid-cols-3 gap-6 mb-6">
-                    <div class="p-4 bg-blue-50 rounded-xl">
-                        <p class="text-blue-600 text-sm font-semibold mb-1">Total Penjualan</p>
-                        <p class="text-2xl font-extrabold text-blue-900">
-                            {{ number_format($penjualan->total_qty ?? 0, 0, ',', '.') }} Tabung</p>
-                    </div>
-                    <div class="p-4 bg-green-50 rounded-xl">
-                        <p class="text-green-600 text-sm font-semibold mb-1">Total Pendapatan</p>
-                        <p class="text-2xl font-extrabold text-green-900">Rp
-                            {{ number_format($penjualan->total_pendapatan ?? 0, 0, ',', '.') }}</p>
-                    </div>
-                    <div class="p-4 bg-purple-50 rounded-xl">
-                        <p class="text-purple-600 text-sm font-semibold mb-1">Keuntungan Kotor</p>
-                        <p class="text-2xl font-extrabold text-purple-900">Rp
-                            {{ number_format($keuntungan, 0, ',', '.') }}</p>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase">Rank</th>
+                                <th class="px-6 py-4 text-left text-xs font-bold text-gray-700 uppercase">Staff</th>
+                                <th class="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase">Transaksi</th>
+                                <th class="px-6 py-4 text-center text-xs font-bold text-gray-700 uppercase">Tabung</th>
+                                <th class="px-6 py-4 text-right text-xs font-bold text-gray-700 uppercase">Total Penjualan
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            @foreach ($topStaff as $index => $staff)
+                                <tr class="hover:bg-purple-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            @if ($index === 0)
+                                                <div
+                                                    class="w-8 h-8 bg-yellow-500 rounded-full flex items-center justify-center">
+                                                    <span class="text-white font-bold">🏆</span>
+                                                </div>
+                                            @elseif($index === 1)
+                                                <div
+                                                    class="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center">
+                                                    <span class="text-white font-bold">🥈</span>
+                                                </div>
+                                            @elseif($index === 2)
+                                                <div
+                                                    class="w-8 h-8 bg-orange-600 rounded-full flex items-center justify-center">
+                                                    <span class="text-white font-bold">🥉</span>
+                                                </div>
+                                            @else
+                                                <div
+                                                    class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                                    <span class="text-gray-600 font-bold">{{ $index + 1 }}</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <p class="font-bold text-gray-900">{{ $staff->user->nama }}</p>
+                                        <p class="text-xs text-gray-500">{{ $staff->user->email }}</p>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span class="px-3 py-1 bg-cyan-100 text-cyan-700 rounded-full text-sm font-bold">
+                                            {{ $staff->total_transaksi }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <span
+                                            class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-bold">
+                                            {{ $staff->total_qty }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <p class="text-xl font-bold text-gray-900">Rp
+                                            {{ number_format($staff->total_penjualan, 0, ',', '.') }}</p>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
+        @endif
 
     </div>
 
     @push('scripts')
         <script>
-            // Chart.js - Sales Chart
             const ctx = document.getElementById('salesChart').getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 0, 300);
             gradient.addColorStop(0, 'rgba(102, 126, 234, 0.4)');
@@ -256,7 +313,7 @@
                     plugins: {
                         legend: {
                             display: true,
-                            position: 'top',
+                            position: 'top'
                         },
                         tooltip: {
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
@@ -271,10 +328,10 @@
                             position: 'left',
                             beginAtZero: true,
                             ticks: {
-                                precision: 0,
+                                precision: 0
                             },
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.05)',
+                                color: 'rgba(0, 0, 0, 0.05)'
                             }
                         },
                         y1: {
@@ -283,12 +340,12 @@
                             position: 'right',
                             beginAtZero: true,
                             grid: {
-                                drawOnChartArea: false,
-                            },
+                                drawOnChartArea: false
+                            }
                         },
                         x: {
                             grid: {
-                                display: false,
+                                display: false
                             }
                         }
                     }

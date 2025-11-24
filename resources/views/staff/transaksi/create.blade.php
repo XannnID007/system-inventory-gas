@@ -33,7 +33,7 @@
         </div>
 
         <!-- Form Transaksi -->
-        <form action="{{ route('transaksi.store') }}" method="POST" x-data="transaksiForm()"
+        <form action="{{ route('staff.transaksi.store') }}" method="POST" x-data="transaksiForm()"
             class="glass-white rounded-2xl p-8 shadow-xl">
             @csrf
 
@@ -214,7 +214,7 @@
 
             <!-- Action Buttons -->
             <div class="flex gap-4 mt-8 pt-6 border-t-2 border-gray-100">
-                <a href="{{ route('transaksi.index') }}"
+                <a href="{{ route('staff.transaksi.index') }}"
                     class="flex-1 px-6 py-4 border-2 border-gray-300 text-gray-700 font-bold rounded-xl hover:bg-gray-50 transition-all text-center">
                     Batal
                 </a>

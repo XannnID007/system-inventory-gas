@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Staff;
 
+use App\Http\Controllers\Controller;
 use App\Models\StokMasuk;
 use App\Models\PenyesuaianStok;
 use App\Models\StokSekarang;
-use App\Models\Pengaturan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
@@ -15,10 +15,17 @@ class StokController extends Controller
     public function index()
     {
         $stokSekarang = StokSekarang::getStok();
-        $stokMasuk = StokMasuk::with('user')->orderBy('created_at', 'desc')->paginate(15);
-        $penyesuaian = PenyesuaianStok::with('user')->orderBy('created_at', 'desc')->paginate(15);
 
-        return view('stok.index', compact('stokSekarang', 'stokMasuk', 'penyesuaian'));
+        // Staff hanya lihat stok yang dia input
+        $stokMasuk = StokMasuk::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        $penyesuaian = PenyesuaianStok::where('user_id', auth()->id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(15);
+
+        return view('staff.stok.index', compact('stokSekarang', 'stokMasuk', 'penyesuaian'));
     }
 
     public function storeStokMasuk(Request $request)
@@ -37,14 +44,11 @@ class StokController extends Controller
             $data = $request->only(['jumlah', 'harga_beli', 'tanggal_beli', 'supplier', 'catatan']);
             $data['user_id'] = auth()->id();
 
-            // Upload foto bukti jika ada
             if ($request->hasFile('foto_bukti')) {
                 $data['foto_bukti'] = $request->file('foto_bukti')->store('bukti-stok', 'public');
             }
 
             $stokMasuk = StokMasuk::create($data);
-
-            // Tambah stok
             StokSekarang::tambahStok($request->jumlah);
 
             DB::commit();
@@ -72,7 +76,6 @@ class StokController extends Controller
 
             $penyesuaian = PenyesuaianStok::create($data);
 
-            // Update stok
             if ($request->tipe === 'penambahan') {
                 StokSekarang::tambahStok($request->jumlah);
             } else {
@@ -82,29 +85,6 @@ class StokController extends Controller
             DB::commit();
 
             return back()->with('success', 'Penyesuaian stok berhasil! Kode: ' . $penyesuaian->kode);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
-        }
-    }
-
-    public function destroyStokMasuk(StokMasuk $stokMasuk)
-    {
-        DB::beginTransaction();
-        try {
-            // Kurangi stok
-            StokSekarang::kurangiStok($stokMasuk->jumlah);
-
-            // Hapus foto jika ada
-            if ($stokMasuk->foto_bukti) {
-                Storage::disk('public')->delete($stokMasuk->foto_bukti);
-            }
-
-            $stokMasuk->delete();
-
-            DB::commit();
-
-            return back()->with('success', 'Data stok masuk berhasil dihapus');
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());

@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Owner;
 
+use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use App\Models\StokMasuk;
 use App\Models\StokSekarang;
 use App\Models\Pengaturan;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
-class DashboardController extends Controller
+class OwnerDashboardController extends Controller
 {
     public function index()
     {
@@ -33,7 +34,7 @@ class DashboardController extends Controller
             ->whereYear('tanggal_beli', now()->year)
             ->sum('total_modal');
 
-        // Keuntungan bulan ini (estimasi)
+        // Keuntungan bulan ini
         $keuntunganBulanIni = ($penjualanBulanIni->total_rupiah ?? 0) - $modalBulanIni;
 
         // Grafik penjualan 7 hari terakhir
@@ -52,19 +53,30 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
+        // Statistik Staff
+        $totalStaff = User::where('role', 'staff')->count();
+        $staffAktif = User::where('role', 'staff')
+            ->whereHas('transaksi', function ($q) {
+                $q->whereDate('tanggal_transaksi', today());
+            })
+            ->count();
+
         // Check stok minimum
         $alertStok = false;
         if ($pengaturan && $pengaturan->notifikasi_stok) {
             $alertStok = $stok <= $pengaturan->stok_minimum;
         }
 
-        return view('dashboard.index', compact(
+        return view('owner.dashboard', compact(
             'stok',
             'penjualanHariIni',
             'penjualanBulanIni',
             'keuntunganBulanIni',
+            'modalBulanIni',
             'grafikPenjualan',
             'transaksiTerakhir',
+            'totalStaff',
+            'staffAktif',
             'alertStok',
             'pengaturan'
         ));

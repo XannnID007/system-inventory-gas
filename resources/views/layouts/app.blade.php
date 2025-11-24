@@ -201,10 +201,13 @@
                     @php
                         $activeClass = 'sidebar-active shadow-lg shadow-green-500/30';
                         $inactiveClass = 'text-gray-600 hover:bg-green-50 hover:text-green-700';
+                        $isOwner = auth()->user()->isOwner();
+                        $prefix = $isOwner ? 'owner' : 'staff';
                     @endphp
 
-                    <a href="{{ route('dashboard') }}" title="Dashboard"
-                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('dashboard') ? $activeClass : $inactiveClass }}"
+                    {{-- Dashboard --}}
+                    <a href="{{ route($prefix . '.dashboard') }}" title="Dashboard"
+                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs($prefix . '.dashboard') ? $activeClass : $inactiveClass }}"
                         :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
                         <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -213,56 +216,108 @@
                         <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Dashboard</span>
                     </a>
 
-                    <a href="{{ route('transaksi.index') }}" title="Kelola Transaksi"
-                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('transaksi.*') ? $activeClass : $inactiveClass }}"
-                        :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
-                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Kelola Transaksi</span>
-                    </a>
+                    @if ($isOwner)
+                        {{-- OWNER MENU --}}
 
-                    <a href="{{ route('stok.index') }}" title="Kelola Stok"
-                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('stok.*') ? $activeClass : $inactiveClass }}"
-                        :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
-                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Kelola Stok</span>
-                    </a>
+                        {{-- Kelola Staff --}}
+                        <a href="{{ route('owner.staff.index') }}" title="Kelola Staff"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('owner.staff.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Kelola Staff</span>
+                        </a>
 
-                    <a href="{{ route('laporan.index') }}" title="Laporan"
-                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('laporan.*') ? $activeClass : $inactiveClass }}"
-                        :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
-                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Laporan</span>
-                    </a>
+                        {{-- Laporan Keuangan --}}
+                        <a href="{{ route('owner.laporan.index') }}" title="Laporan Keuangan"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('owner.laporan.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Laporan
+                                Keuangan</span>
+                        </a>
 
-                    <a href="{{ route('riwayat.index') }}" title="Riwayat"
-                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('riwayat.*') ? $activeClass : $inactiveClass }}"
-                        :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
-                        <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Riwayat</span>
-                    </a>
+                        {{-- Riwayat Lengkap --}}
+                        <a href="{{ route('owner.riwayat.index') }}" title="Riwayat Lengkap"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('owner.riwayat.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Riwayat
+                                Lengkap</span>
+                        </a>
 
-                    <a href="{{ route('pengaturan.index') }}" title="Pengaturan"
-                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('pengaturan.*') ? $activeClass : $inactiveClass }}"
+                        {{-- Pengaturan Toko --}}
+                        <a href="{{ route('owner.pengaturan.index') }}" title="Pengaturan Toko"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('owner.pengaturan.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Pengaturan
+                                Toko</span>
+                        </a>
+                    @else
+                        {{-- STAFF MENU --}}
+
+                        {{-- Transaksi Penjualan --}}
+                        <a href="{{ route('staff.transaksi.index') }}" title="Transaksi Penjualan"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('staff.transaksi.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Transaksi
+                                Penjualan</span>
+                        </a>
+
+                        {{-- Kelola Stok --}}
+                        <a href="{{ route('staff.stok.index') }}" title="Kelola Stok"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('staff.stok.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Kelola Stok</span>
+                        </a>
+
+                        {{-- Riwayat Saya --}}
+                        <a href="{{ route('staff.riwayat.index') }}" title="Riwayat Saya"
+                            class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('staff.riwayat.*') ? $activeClass : $inactiveClass }}"
+                            :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
+                            <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Riwayat Saya</span>
+                        </a>
+                    @endif
+
+                    {{-- Profil - Universal --}}
+                    <a href="{{ route('profil.index') }}" title="Profil Saya"
+                        class="flex items-center gap-3 py-3.5 rounded-xl transition-all duration-300 whitespace-nowrap {{ request()->routeIs('profil.*') ? $activeClass : $inactiveClass }}"
                         :class="sidebarOpen ? 'px-4' : 'justify-center px-2'">
                         <svg class="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
-                        <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Pengaturan</span>
+                        <span x-show="sidebarOpen" x-transition.opacity class="font-semibold">Profil Saya</span>
                     </a>
                 </nav>
             </div>
@@ -333,7 +388,7 @@
                                 <p class="text-xs text-gray-500">{{ auth()->user()->email }}</p>
                             </div>
 
-                            <a href="{{ route('pengaturan.index') }}"
+                            <a href="{{ route('owner.pengaturan.index') }}"
                                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-colors">
                                 <div class="flex items-center gap-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
